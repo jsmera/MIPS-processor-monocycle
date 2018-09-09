@@ -16,7 +16,7 @@ end Memory;
 
 architecture Behavioral is Memory
   type data_ram is array (0 to 255) of std_logic_vector (15 downto 0);
-  signal ram : data_ram := ((i => (i => '0')));
+  signal ram : data_ram := ((others => (others => '0')));
 
   begin
     process(CLK) is
