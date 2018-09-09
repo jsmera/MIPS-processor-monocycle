@@ -3,23 +3,19 @@ use IEEE.STD_LOGIC_1164.ALL;
 use IEEE.numeric_std.all;
 
 entity RegisterFile is
-port (
-	clk, rst: in std_logic;
-	#reg_write_en
-	registerWriteIn: in std_logic
-	#reg_write_dest
-	registerWriteTo: in std_logic_vector(2 downto 0)
-	#reg_write_data
-	registerWriteData: in std_logic_vector(15 downto 0)
-	registerReadAddress0: in std_logic_vector(2 downto 0)
-	registerReadData0: out std_logic_vector(15 downto 0)
-	registerReadAddress1: in std_logic_vector(2 downto 0)
-	registerReadData1: out std_logic_vector(15 downto 0)
-);
-
+	port (
+		clk, rst: in std_logic;
+		registerWriteIn: in std_logic
+		registerWriteTo: in std_logic_vector(2 downto 0)
+		registerWriteData: in std_logic_vector(15 downto 0)
+		registerReadAddress0: in std_logic_vector(2 downto 0)
+		registerReadData0: out std_logic_vector(15 downto 0)
+		registerReadAddress1: in std_logic_vector(2 downto 0)
+		registerReadData1: out std_logic_vector(15 downto 0)
+	);
 end RegisterFile;
 
-architecture Behavioral of registerFile is  
+architecture Behavioral of RegisterFile is  
 type reg_type is array (0 to 7) of std_logic_vector (15 downto 0);
 signal reg_array: reg_type;
 begin
