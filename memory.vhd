@@ -27,8 +27,7 @@ architecture Behavioral is Memory
         end if;
       end if;
 
-      if MemRead = '1' then
-        readData <= ram(to_integer(unsigned(address)));
       end if;
     end process;
+    readData <= ram(to_integer(unsigned(address))) when (MemRead = '1') else "X";
 end Memory;
