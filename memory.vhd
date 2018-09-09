@@ -10,14 +10,14 @@ entity Memory is
     MemRead: in std_logic;
     address: in std_logic_vector(15 downto 0);
     writeData: in std_logic_vector(31 downto 0);
-    readData: out std_logic_vector(31 downto 0);
+    readData: out std_logic_vector(31 downto 0)
   );
 end Memory;
 
-architecture Behavioral is Memory
-  type data_ram is array (0 to 255) of std_logic_vector (15 downto 0);
+architecture behavior of Memory is
+  type data_ram is array (15 downto 0) of std_logic_vector (31 downto 0);
   signal ram : data_ram := ((others => (others => '0')));
-
+  constant IDK: std_logic_vector(31 downto 0) := (others => '0');
   begin
     process(CLK) is
       begin
@@ -26,8 +26,6 @@ architecture Behavioral is Memory
           ram(to_integer(unsigned(address))) <= writeData;
         end if;
       end if;
-
-      end if;
     end process;
-    readData <= ram(to_integer(unsigned(address))) when (MemRead = '1') else "X";
-end Memory;
+    readData <= ram(to_integer(unsigned(address))) when (MemRead = '1') else IDK;
+end behavior;
