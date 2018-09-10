@@ -82,7 +82,7 @@ architecture behavior of CPU is
 	
 	begin
 	--- Fetch
-	process(CLK)
+	process(CLK, RESET)
 		begin 
 			if(RESET = '1') then
 				pc_current <= "00000000000000000000000000000000";
