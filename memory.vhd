@@ -8,14 +8,14 @@ entity Memory is
     CLK: in std_logic;
     MemWrite: in std_logic;
     MemRead: in std_logic;
-    address: in std_logic_vector(15 downto 0);
+    address: in std_logic_vector(31 downto 0);
     writeData: in std_logic_vector(31 downto 0);
     readData: out std_logic_vector(31 downto 0)
   );
 end Memory;
 
 architecture behavior of Memory is
-  type data_ram is array (15 downto 0) of std_logic_vector (31 downto 0);
+  type data_ram is array (31 to 0) of std_logic_vector (31 downto 0);
   signal ram : data_ram := ((others => (others => '0')));
   constant IDK: std_logic_vector(31 downto 0) := (others => '0');
   begin
