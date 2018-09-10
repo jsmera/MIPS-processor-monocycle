@@ -26,48 +26,53 @@ architecture behavioral of tb_RegisterFile is
 			registerReadData1: out std_logic_vector(31 downto 0);
 			registerReadData2: out std_logic_vector(31 downto 0)
 			);
-		end component;
-		begin
-			reg : RegisterFile port map(
-				clk => clk,
-				registerWrite => regWrite,
-				registerRead1 => regRead1,
-				registerRead2 => regRead2,
-				writeRegister => writeReg,
-				registerWriteData => regWriteData, 
-				registerReadData1 => regReadData1,
-				registerReadData2 => regReadData1
-			);
-			
-			Clock: process
-				begin
-					wait for 15 ns;
-					clk <= '1';
-					wait for 20 ns;
-					clk <= '0';
-					wait for 20 ns;
-					clk <= '1';
-			end process Clock;
-			
-			Write1: process
-				begin	
-					wait for 20 ns;
-					regWrite <= '1';
-					wait for 20 ns;
-					regWrite <= '0';
-			end process Write1;
-			
-			Addres: process
-				begin
-					wait for 20 ns;
-					writeReg <= x"0002";
-					wait for 20 ns;
-					regReadData1 <= writeReg;
-			end process Addres;
-			
-			Data: process
-				begin
-					wait for 20 ns;
-					regWriteData <= std_logic_vector(to_unsigned(114, regWriteData'length));
-			end process Data;
+	end component;
+	begin
+		reg : RegisterFile port map(
+			clk => clk,
+			registerWrite => regWrite,
+			registerRead1 => regRead1,
+			registerRead2 => regRead2,
+			writeRegister => writeReg,
+			registerWriteData => regWriteData, 
+			registerReadData1 => regReadData1,
+			registerReadData2 => regReadData1
+		);
+		
+		Clock: process
+			begin
+				wait for 15 ns;
+				clk <= '1';
+				wait for 20 ns;
+				clk <= '0';
+				wait for 20 ns;
+				clk <= '1';
+				wait;
+		end process Clock;
+		
+		Write1: process
+			begin	
+				wait for 20 ns;
+				regWrite <= '1';
+				wait for 20 ns;
+				regWrite <= '0';
+				wait;
+		end process Write1;
+		
+		Addres: process
+			begin
+				wait for 20 ns;
+				writeReg <= "00010";
+				wait for 20 ns;
+				regReadData1 <= (others => '0');
+				regReadData1(4 downto 0) <= writeReg;
+				wait;
+		end process Addres;
+		
+		Data: process
+			begin
+				wait for 20 ns;
+				regWriteData <= std_logic_vector(to_unsigned(27, regWriteData'length));
+				wait;
+		end process Data;
 end behavioral;
