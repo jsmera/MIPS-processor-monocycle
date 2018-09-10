@@ -48,7 +48,7 @@ architecture behavior of tb_Memory is
 				MemWrite <= '1';
 				wait for 5 ns;
 				MemWrite <= '0';
-				memRead <= '1';
+				MemRead <= '1';
 		end process Write;
 		AddressP: process
 			begin
