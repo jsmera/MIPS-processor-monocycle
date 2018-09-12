@@ -25,9 +25,11 @@ architecture behavior of Control is
 		RegWrite <= '1' when (opcode = "000000" or opcode = "100011") else
 		            '0';
 		MemRead <= '0' when (opcode = "000000" or opcode = "101011" or opcode = "000100" or opcode = "000010") else
-					  '1';
+					  '1' when (opcode = "100011") else
+					  'X';
 		MemWrite <= '0' when (opcode = "000000" or opcode = "100011" or opcode = "000100" or opcode = "000010") else
-						'1';
+						'1' when (opcode = "101011") else
+						'X';
 		Branch <= '0' when (opcode = "000000" or opcode = "100011" or opcode = "101011") else
 					 '1';
 		jump <= '1' when (opcode = "000010") else '0';
