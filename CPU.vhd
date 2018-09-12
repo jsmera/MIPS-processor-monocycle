@@ -12,11 +12,11 @@ end CPU;
 
 architecture behavior of CPU is
 	signal pc_current: std_logic_vector (31 downto 0);
-	signal pc_next, pc_add: std_logic_vector (31 downto 0);
+	signal pc_next, pc_add, pc_jump, pc_branch: std_logic_vector (31 downto 0);
 	signal instruction: std_logic_vector (31 downto 0);
 	-- Decode
 	signal writeRegister: std_logic_vector (4 downto 0);
-	signal RegDst, RegWrite, Branch, MemWrite, MemRead, MemtoReg, ALUSrc: std_logic;
+	signal RegDst, RegWrite, Branch, MemWrite, MemRead, jump, MemtoReg, ALUSrc: std_logic;
 	signal ALUOp: std_logic_vector (1 downto 0);
 	
 	signal extend_final, shiftleft2, addressBranch: std_logic_vector (31 downto 0);
@@ -29,7 +29,7 @@ architecture behavior of CPU is
 	signal ALU_OPERATION: std_logic_vector(3 downto 0);
 	-- Data
 	signal readData: std_logic_vector(31 downto 0);
-	
+	signal jump_signal: std_logic_vector(27 downto 0);
 	component IR port (
 		pc: in std_logic_vector (31 downto 0);
 		instruction: out std_logic_vector (31 downto 0)
@@ -68,10 +68,17 @@ architecture behavior of CPU is
 		b: out std_logic_vector(31 downto 0)
 	);
 	end component;
-
+	
+	component shift_jump is
+	port (
+		a: in std_logic_vector(25 downto 0);
+		b: out std_logic_vector(27 downto 0)
+	);
+	end component;
+	
 	component Control port (
 		opcode: in std_logic_vector (5 downto 0);
-		RegDst, RegWrite, Branch, MemWrite, MemRead, MemtoReg, ALUSrc: out std_logic;
+		RegDst, RegWrite, Branch, MemWrite, MemRead, MemtoReg, jump, ALUSrc: out std_logic;
 		ALUOp: out std_logic_vector (1 downto 0)
 	);
 	end component;
@@ -91,6 +98,7 @@ architecture behavior of CPU is
 	);
 	end component;
 	
+
 	component Memory port (
 		CLK: in std_logic;
 		MemWrite: in std_logic;
@@ -128,7 +136,8 @@ architecture behavior of CPU is
 		MemRead => MemRead,
 		MemtoReg => MemtoReg,
 		ALUSrc => ALUSrc,
-		ALUOp => ALUOp
+		ALUOp => ALUOp,
+		jump => jump
 	);
 	
 	-- Mux
@@ -196,9 +205,16 @@ architecture behavior of CPU is
 	
 	addressBranch <= pc_add + shiftleft2;
 	-- Mux
-	pc_next  <=	addressBranch when (and_1 = '1') else pc_add;
+	pc_branch  <=	addressBranch when (and_1 = '1') else pc_add;
 	
+	SHIFT_JUMP1: shift_jump port map(
+		a => instruction(25 downto 0),
+		b => jump_signal
+	);
+
+	pc_jump <= pc_add(31 downto 28) & jump_signal ;
+	pc_next <= pc_jump when (jump = '1') else pc_branch;
 	PC_OUT <= pc_current;
 	ALU_R <= result;
-
+	
 end behavior;
