@@ -7,7 +7,7 @@ end entity;
 architecture behavior of tb_CPU is
 	signal CLK, RESET: std_logic := '0';
 	signal PC_OUT, ALU_R: std_logic_vector (31 downto 0);
-	constant clk_period : time := 20 ns;
+	constant clk_period : time := 10 ns;
 	component CPU port (
 		CLK, RESET: in std_logic;
 		PC_OUT, ALU_R: out std_logic_vector (31 downto 0)
@@ -30,6 +30,12 @@ architecture behavior of tb_CPU is
 			clk <= '0';
 			wait for clk_period/2;
 			clk <= '1';
+			wait for clk_period/2;
+			clk <= '0';
+			wait for clk_period/2;
+			clk <= '1';
+			wait for clk_period/2;
+			clk <= '0';
 			wait for clk_period/2;
 			wait;
 	end process;
