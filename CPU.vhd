@@ -19,7 +19,7 @@ architecture behavior of CPU is
 	signal RegDst, RegWrite, Branch, MemWrite, MemRead, MemtoReg, ALUSrc: std_logic;
 	signal ALUOp: std_logic_vector (1 downto 0);
 	
-	signal sign_extend, shiftleft2, addressBranch: std_logic_vector (31 downto 0);
+	signal extend_final, shiftleft2, addressBranch: std_logic_vector (31 downto 0);
 	signal extend: std_logic_vector (15 downto 0);
 	
 	signal and_1: std_logic;
@@ -48,6 +48,27 @@ architecture behavior of CPU is
 	);
 	end component;
 	
+	component adder is
+	port (
+		a,b: in std_logic_vector(31 downto 0);
+		c: out std_logic_vector(31 downto 0)
+	);
+	end component;
+	
+	component sign_extend is
+	port (
+		a: in std_logic_vector(15 downto 0);
+		b: out std_logic_vector(31 downto 0)
+	);
+	end component;
+	
+	component shift_2 is
+	port (
+		a: in std_logic_vector(31 downto 0);
+		b: out std_logic_vector(31 downto 0)
+	);
+	end component;
+
 	component Control port (
 		opcode: in std_logic_vector (5 downto 0);
 		RegDst, RegWrite, Branch, MemWrite, MemRead, MemtoReg, ALUSrc: out std_logic;
@@ -95,6 +116,8 @@ architecture behavior of CPU is
 		pc => pc_current,
 		instruction => instruction
 	);
+
+	extend <= instruction(15 downto 0);
 	
 	UnitControl: Control port map(
 		opcode => instruction(31 downto 26),
@@ -112,8 +135,10 @@ architecture behavior of CPU is
 	writeRegister <= instruction(15 downto 11) when (RegDst = '1') else instruction(20 downto 16);
 	
 	-- Sign extend
-	extend <= (others => instruction(15));
-	sign_extend <= extend & instruction(15 downto 0);
+	EXTEND1: sign_extend port map(
+		a => extend,
+		b => extend_final
+	);
 	
 	Registers: RegisterFile port map(
 		clk => CLK,
@@ -127,7 +152,7 @@ architecture behavior of CPU is
 	);
 
 	-- Mux
-	B1 <= sign_extend when (ALUSrc = '1') else B;
+	B1 <= extend_final when (ALUSrc = '1') else B;
 
 	-- ALU
 	ALU_INS: alu port map(
@@ -157,12 +182,22 @@ architecture behavior of CPU is
 	-- Mux 
 	final <= readData when (MemtoReg = '1') else result;
 
-	pc_add <= pc_current + "00000000000000000000000000000100";
+	ADD1: adder port map(
+		a => pc_current,
+		b => "00000000000000000000000000000100",
+		c => pc_add
+	);
+	
 	and_1 <= zero and Branch;
-	shiftleft2 <= std_logic_vector(shift_left(signed(sign_extend), 2));
+	SHIFT2: shift_2 port map(
+		a => extend_final,
+		b => shiftleft2
+	);
+	
 	addressBranch <= pc_add + shiftleft2;
 	-- Mux
 	pc_next  <=	addressBranch when (and_1 = '1') else pc_add;
+	
 	PC_OUT <= pc_current;
 	ALU_R <= result;
 
