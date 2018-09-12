@@ -23,9 +23,9 @@ architecture behavior of Memory is
 	others => (others => '0'));
   constant IDK: std_logic_vector(31 downto 0) := (others => '0');
   begin
-    process(CLK, MemWrite) is
+    process(CLK) is
       begin
-      if rising_edge(CLK) then
+      if falling_edge(CLK) then
         if MemWrite = '1' then
           ram(to_integer(unsigned(address))) <= writeData;
         end if;

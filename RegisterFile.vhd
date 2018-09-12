@@ -26,7 +26,7 @@ architecture behavior of RegisterFile is
 	
 	process(clk)
 		begin
-      if rising_edge(clk) then
+      if falling_edge(clk) then
         if registerWrite = '1' then
           reg_mem(to_integer(unsigned(writeRegister))) <= registerWriteData;
         end if;

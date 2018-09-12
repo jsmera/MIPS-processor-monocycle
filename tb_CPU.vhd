@@ -37,6 +37,26 @@ architecture behavior of tb_CPU is
 			wait for clk_period/2;
 			clk <= '0';
 			wait for clk_period/2;
+			clk <= '1';
+			wait for clk_period/2;
+			clk <= '0';
+			wait for clk_period/2;
+			clk <= '1';
+			wait for clk_period/2;
+			clk <= '0';
+			wait for clk_period/2;
+			clk <= '1';
+			wait for clk_period/2;
+			clk <= '0';
+			wait for clk_period/2;
+			clk <= '1';
+			wait for clk_period/2;
+			clk <= '0';
+			wait for clk_period/2;
+			clk <= '1';
+			wait for clk_period/2;
+			clk <= '0';
+			wait for clk_period/2;
 			wait;
 	end process;
 	-- Stimulus process
